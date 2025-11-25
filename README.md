@@ -116,42 +116,42 @@ To access the admin dashboard:
 
 ## Deployment Options
 
-### Option 1: Automatic Deployment with GitHub Actions (Recommended)
+### Option 1: Vercel Deployment (FREE & Recommended) 🚀
 
-This project includes CI/CD pipelines for automatic deployment:
+**Easy One-Click Deployment:**
 
-**🚀 Railway Deployment (Free Tier):**
-1. Fork/clone this repository
-2. Sign up at [Railway.app](https://railway.app)
-3. Connect your GitHub repository to Railway
-4. Set environment variables in Railway dashboard:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Menu-Makers/menu-makers-portfolio)
+
+**Manual Vercel Setup:**
+1. Sign up at [Vercel.com](https://vercel.com) (FREE)
+2. Connect your GitHub account
+3. Import this repository: `Menu-Makers/menu-makers-portfolio`
+4. Add environment variables in Vercel dashboard:
    ```
    EMAIL_USER=your-email@gmail.com
-   EMAIL_PASS=your-app-password
+   EMAIL_PASS=your-gmail-app-password
    ADMIN_USERNAME=admin
    ADMIN_PASSWORD=your-secure-password
-   SESSION_SECRET=your-random-secret
+   SESSION_SECRET=your-random-secret-string
    ```
-5. Push to `main` branch - GitHub Actions will automatically deploy!
+5. Deploy! ✨
 
-**🎯 Render Deployment (Alternative):**
-1. Sign up at [Render.com](https://render.com)
-2. Connect your GitHub repository
-3. Use the included `render.yaml` configuration
-4. Set environment variables in Render dashboard
-5. Deploy automatically on push to `main`
+**Features that work on Vercel:**
+- ✅ Beautiful portfolio website
+- ✅ Contact form with email notifications
+- ✅ Responsive design and animations
+- ✅ Fast global CDN
+- ✅ Automatic HTTPS
+- ✅ Serverless functions
 
-### GitHub Actions Secrets Required:
-Add these in your GitHub repository settings → Secrets:
-- `RAILWAY_TOKEN` (from Railway dashboard)
-- `EMAIL_USER` (Gmail address)
-- `EMAIL_PASS` (Gmail app password)  
-- `ADMIN_USERNAME` (admin username)
-- `ADMIN_PASSWORD` (admin password)
-- `SESSION_SECRET` (random string)
+### Option 2: GitHub Actions Auto-Deploy
+Set up these secrets in GitHub repository settings:
+- `VERCEL_TOKEN` (from Vercel dashboard)
+- `VERCEL_ORG_ID` (from Vercel dashboard)
+- `VERCEL_PROJECT_ID` (from Vercel dashboard)
+- `EMAIL_USER`, `EMAIL_PASS`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SESSION_SECRET`
 
-### Option 2: Manual Full-Stack Deployment
-For manual deployment to:
+Push to `main` branch → automatic deployment!
 
 - **Railway** - `railway deploy` (Modern, easy deployment)
 - **Heroku** - Full-stack deployment with SQLite
