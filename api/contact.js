@@ -1,6 +1,11 @@
 // Vercel serverless function for contact form
 const nodemailer = require('nodemailer');
 
+// Environment variables helper - handle both cases
+const getEnvVar = (name) => {
+  return process.env[name] || process.env[name.toLowerCase()];
+};
+
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);

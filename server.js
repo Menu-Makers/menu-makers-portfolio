@@ -2,9 +2,15 @@
 console.log('🚀 Starting Menu Makers Portfolio with Database...');
 
 require('dotenv').config();
+
+// Environment variables helper - handle both cases
+const getEnvVar = (name) => {
+  return process.env[name] || process.env[name.toLowerCase()];
+};
+
 console.log('✅ Environment loaded');
-console.log('Email user:', process.env.EMAIL_USER);
-console.log('Email pass length:', process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : 'undefined');
+console.log('Email user:', getEnvVar('EMAIL_USER'));
+console.log('Email pass length:', getEnvVar('EMAIL_PASS') ? getEnvVar('EMAIL_PASS').length : 'undefined');
 
 // Database setup
 const sqlite3 = require('sqlite3').verbose();
@@ -112,8 +118,8 @@ try {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
+            user: getEnvVar('EMAIL_USER'),
+            pass: getEnvVar('EMAIL_PASS')
         }
     });
     console.log('✅ Transporter created successfully');
@@ -490,19 +496,19 @@ try {
 
             switch (teamMember) {
                 case 'jatinder':
-                    recipientEmail = process.env.JATINDER_EMAIL || 'menumakers17@gmail.com';
+                    recipientEmail = getEnvVar('JATINDER_EMAIL') || 'menumakers17@gmail.com';
                     recipientName = 'Jatinder Kaur';
                     break;
                 case 'mansi':
-                    recipientEmail = process.env.MANSI_EMAIL || 'menumakers17@gmail.com';
+                    recipientEmail = getEnvVar('MANSI_EMAIL') || 'menumakers17@gmail.com';
                     recipientName = 'Mansi Keer';
                     break;
                 case 'madhusudan':
-                    recipientEmail = process.env.MADHUSUDAN_EMAIL || 'menumakers17@gmail.com';
+                    recipientEmail = getEnvVar('MADHUSUDAN_EMAIL') || 'menumakers17@gmail.com';
                     recipientName = 'Madhusudan Mainali';
                     break;
                 case 'ramesh':
-                    recipientEmail = process.env.RAMESH_EMAIL || 'menumakers17@gmail.com';
+                    recipientEmail = getEnvVar('RAMESH_EMAIL') || 'menumakers17@gmail.com';
                     recipientName = 'Ramesh Kumawat';
                     break;
                 default:
@@ -512,7 +518,7 @@ try {
 
             // Enhanced email to team member with inquiry ID
             const teamMailOptions = {
-                from: process.env.EMAIL_USER,
+                from: getEnvVar('EMAIL_USER'),
                 to: recipientEmail,
                 subject: `[#${inquiryId}] New Contact: ${subject || 'General Inquiry'}`,
                 html: `
@@ -549,7 +555,7 @@ try {
 
             // Enhanced confirmation email to user with reference ID
             const userMailOptions = {
-                from: process.env.EMAIL_USER,
+                from: getEnvVar('EMAIL_USER'),
                 to: email,
                 subject: `Thank you for contacting Menu Makers! [Reference: #${inquiryId}]`,
                 html: `
@@ -840,10 +846,10 @@ try {
 
             // Prepare email options
             const mailOptions = {
-                from: process.env.EMAIL_USER,
+                from: getEnvVar('EMAIL_USER'),
                 to: to,
                 subject: inquiryId ? `Re: [#${inquiryId}] ${subject}` : subject,
-                replyTo: replyTo || process.env.EMAIL_USER,
+                replyTo: replyTo || getEnvVar('EMAIL_USER'),
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                         <div style="background: linear-gradient(135deg, #00cec9 0%, #00d4aa 50%, #55efc4 100%); padding: 20px; text-align: center;">
