@@ -1,4 +1,4 @@
-name: Deploy to Railway
+name: Deploy to Vercel
 
 on:
   push:
@@ -28,14 +28,10 @@ jobs:
         echo "Running basic tests..."
         node -e "console.log('Node.js is working')"
         
-    - name: Deploy to Railway
-      uses: railwayapp/railway-deploy@v3
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
       with:
-        railway_token: ${{ secrets.RAILWAY_TOKEN }}
-        service: ${{ secrets.RAILWAY_SERVICE_ID }}
-      env:
-        EMAIL_USER: ${{ secrets.EMAIL_USER }}
-        EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-        ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
-        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        working-directory: ./
