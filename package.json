@@ -1,0 +1,40 @@
+{
+  "name": "menu-makers-portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio website for Menu Makers team showcasing full-stack development skills",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "portfolio",
+    "full-stack",
+    "web-development",
+    "menu-makers"
+  ],
+  "authors": [
+    "Jatinder Kaur - Team Lead",
+    "Mansi Keer - UI/UX Designer",
+    "Madhusudan Mainali - Documentation & QA",
+    "Ramesh Kumawat - Technical Lead"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-session": "^1.18.2",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.0.0",
+    "nodemailer": "^7.0.10",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
