@@ -114,14 +114,39 @@ To access the admin dashboard:
    - Password: Set via `ADMIN_PASSWORD`
 3. After successful login, you'll be redirected to the admin dashboard
 
-## Deployment
+## Deployment Options
 
-The website is ready for deployment on platforms like:
+### Option 1: Full-Stack Deployment (Recommended)
+For the complete project with backend functionality, deploy to:
 
+- **Railway** - `railway deploy` (Modern, easy deployment)
 - **Heroku** - Full-stack deployment with SQLite
-- **Vercel** - Frontend deployment (configure for Node.js backend)
-- **Railway** - Modern deployment platform with database support
-- **DigitalOcean** - VPS deployment with full control
+- **Render** - Free tier available for full-stack apps
+- **DigitalOcean App Platform** - Professional deployment
+- **Vercel** - Configure for Node.js backend support
+
+### Option 2: Static Frontend Only (GitHub Pages)
+To deploy only the frontend to GitHub Pages:
+
+1. The contact form will be display-only (no backend functionality)
+2. Admin dashboard will not be functional without backend
+3. Only the portfolio showcase will work
+
+**GitHub Pages Setup:**
+```bash
+# Push to GitHub
+git remote add origin https://github.com/yourusername/menu-makers.git
+git branch -M main
+git push -u origin main
+
+# Enable GitHub Pages in repository settings
+# Choose: Deploy from a branch → main → / (root)
+```
+
+### Option 3: Hybrid Deployment
+- Frontend: GitHub Pages (static portfolio)
+- Backend: Railway/Heroku (API endpoints)
+- Configure CORS for cross-origin requests
 
 ### Environment Variables for Production
 
