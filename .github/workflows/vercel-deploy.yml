@@ -48,7 +48,16 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: "--prod"
           working-directory: ./
-          vercel-env: production
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          JATINDER_EMAIL: ${{ secrets.JATINDER_EMAIL }}
+          MANSI_EMAIL: ${{ secrets.MANSI_EMAIL }}
+          MADHUSUDAN_EMAIL: ${{ secrets.MADHUSUDAN_EMAIL }}
+          RAMESH_EMAIL: ${{ secrets.RAMESH_EMAIL }}
         
       - name: Deployment Success
         run: |
