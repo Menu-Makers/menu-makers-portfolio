@@ -128,7 +128,7 @@ try {
         console.log('✅ SendGrid configured for production');
     } else {
         // Use Gmail for development
-        transporter = nodemailer.createTransporter({
+        transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
                 user: getEnvVar('EMAIL_USER'),
