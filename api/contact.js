@@ -27,18 +27,21 @@ export default async function handler(req, res) {
       });
     }
 
-    // Create transporter
+    // Create transporter - handle both uppercase and lowercase env vars
+    const emailUser = process.env.EMAIL_USER || process.env.email_user;
+    const emailPass = process.env.EMAIL_PASS || process.env.email_pass;
+    
     const transporter = nodemailer.createTransporter({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: emailUser,
+        pass: emailPass
       }
     });
 
     // Email content
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: emailUser,
       to: 'menumakers17@gmail.com',
       subject: `New Contact Form Submission: ${subject || 'General Inquiry'}`,
       html: `
