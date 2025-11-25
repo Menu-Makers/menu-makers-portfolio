@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Makers | Full Stack Development Team</title>
+    <meta name="description" content="Menu Makers - A talented full-stack development team specializing in modern web applications, UI/UX design, and quality assurance.">
+    <meta name="keywords" content="full stack development, web development, UI/UX design, portfolio, Menu Makers">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="scroll-progress"></div>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="/images/logo.png" alt="Menu Makers Logo" class="logo-image" onerror="this.src='/images/logo.svg'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='block';};">
+                <h2 style="display: none;">Menu Makers</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#team" class="nav-link">Team</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#projects" class="nav-link">Projects</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#skills" class="nav-link">Skills</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">Contact</a>
+                </li>
+            </ul>
+            <div class="nav-controls">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                </button>
+                <div class="nav-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="particles-background"></div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="gradient-text">Menu Makers</span>
+                    <br>Full Stack Development Team
+                </h1>
+                <p class="hero-subtitle">
+                    We create modern, scalable, and intuitive web applications that make a difference. 
+                    From concept to deployment, we deliver exceptional digital experiences.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary">View Our Work</a>
+                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-graphic">
+                    <div class="tech-elements">
+                        <i class="fas fa-code"></i>
+                        <span class="binary-code">01101</span>
+                        <i class="fas fa-brackets-curly"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-stats">
+            <div class="stat">
+                <h3>4</h3>
+                <p>Team Members</p>
+            </div>
+            <div class="stat">
+                <h3>10+</h3>
+                <p>Technologies</p>
+            </div>
+            <div class="stat">
+                <h3>100%</h3>
+                <p>Commitment</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>About Menu Makers</h2>
+                <p>A collaborative team dedicated to building exceptional web solutions</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Our Mission</h3>
+                    <p>
+                        At Menu Makers, our purpose is to collaborate as a team to build applications and websites 
+                        that not only function seamlessly but are also intuitive, visually engaging, and scalable 
+                        for the future. By bringing our diverse skills together, we aim to deliver modern, reliable, 
+                        and client-focused web solutions that truly make a difference.
+                    </p>
+                    <h3>Our Approach</h3>
+                    <p>
+                        We believe in combining technical expertise with creative design thinking. Our team follows 
+                        agile methodologies, ensuring clear communication, timely delivery, and continuous improvement 
+                        in every project we undertake.
+                    </p>
+                </div>
+                <div class="about-features">
+                    <div class="feature">
+                        <i class="fas fa-users"></i>
+                        <h4>Collaborative Team</h4>
+                        <p>Diverse skills working in perfect harmony</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-rocket"></i>
+                        <h4>Modern Solutions</h4>
+                        <p>Latest technologies and best practices</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-heart"></i>
+                        <h4>Client-Focused</h4>
+                        <p>Your success is our priority</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Scalable</h4>
+                        <p>Built to grow with your business</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="team">
+        <div class="container">
+            <div class="section-header">
+                <h2>Meet Our Team</h2>
+                <p>The talented individuals behind Menu Makers</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/jatinder image.png" alt="Jatinder Kaur - Team Lead & Project Coordinator" onerror="this.src='/images/default-avatar.png'">
+                        <div class="team-overlay">
+                            <div class="team-social">
+                                <a href="https://www.linkedin.com/in/jatinder-kaur-sondh/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                                <a href="https://github.com/jatinder-sondh" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                                <a href="https://www.jatinderkaur.in/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio Website"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h3>Jatinder Kaur</h3>
+                        <p class="team-role">Team Lead & Project Coordinator</p>
+                        <p class="team-bio">
+                            Strategic leader specializing in agile project management and team coordination. 
+                            Delivers complex projects on time with focus on quality and client satisfaction.
+                        </p>
+                        <div class="team-skills">
+                            <span>Project Management</span>
+                            <span>Agile/Scrum</span>
+                            <span>Team Leadership</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/mansi-image.jpg" alt="Mansi Keer - UI/UX Designer" onerror="this.src='/images/default-avatar.png'">
+                        <div class="team-overlay">
+                            <div class="team-social">
+                                <a href="https://www.linkedin.com/in/mansi-keer-69843b308/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                                <a href="https://github.com/mansi-keer" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                                <a href="https://mansi-keer.github.io/myportfolio/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio Website"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h3>Mansi Keer</h3>
+                        <p class="team-role">UI/UX Designer</p>
+                        <p class="team-bio">
+                            Creative designer with expertise in user-centered design principles. Creates stunning 
+                            wireframes, prototypes, and visual designs that enhance user experience.
+                        </p>
+                        <div class="team-skills">
+                            <span>UI/UX Design</span>
+                            <span>Prototyping</span>
+                            <span>User Research</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/madhusudan image.jpeg" alt="Madhusudan Mainali - Documentation & QA Specialist" onerror="this.src='/images/default-avatar.png'">
+                        <div class="team-overlay">
+                            <div class="team-social">
+                                <a href="https://linkedin.com/in/madhusudan-mainali63" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                                <a href="https://github.com/mainalim" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h3>Madhusudan Mainali</h3>
+                        <p class="team-role">Documentation & QA Specialist</p>
+                        <p class="team-bio">
+                            Meticulous professional focused on quality control and comprehensive documentation. 
+                            Ensures projects meet the highest standards through thorough testing and analysis.
+                        </p>
+                        <div class="team-skills">
+                            <span>Quality Assurance</span>
+                            <span>Technical Writing</span>
+                            <span>Testing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/ramesh-image.png" alt="Ramesh Kumawat - Technical Lead & Developer" onerror="this.src='/images/default-avatar.png'">
+                        <div class="team-overlay">
+                            <div class="team-social">
+                                <a href="https://www.linkedin.com/in/rameshkumawat/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                                <a href="https://github.com/Ramesh-kumawat" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                                <a href="https://ramesh-portfolio-one.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio Website"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h3>Ramesh Kumawat</h3>
+                        <p class="team-role">Technical Lead & Developer</p>
+                        <p class="team-bio">
+                            Full-stack developer with strong programming and problem-solving skills. Leads technical 
+                            implementation and ensures code quality across all projects.
+                        </p>
+                        <div class="team-skills">
+                            <span>Full Stack Development</span>
+                            <span>JavaScript</span>
+                            <span>Node.js</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Projects</h2>
+                <p>Showcasing our technical expertise and creative solutions</p>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/images/project 1.png" alt="Calculator Application" onerror="this.src='/images/default-project.png'">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://menu-makers.github.io/Calculator/" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="https://github.com/Menu-Makers/Calculator" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Code"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>Calculator Application</h3>
+                        <p>A modern, responsive calculator application built with clean UI design and smooth animations. Features standard arithmetic operations with an intuitive user interface.</p>
+                        <div class="project-tech">
+                            <span>HTML5</span>
+                            <span>CSS3</span>
+                            <span>JavaScript</span>
+                            <span>Responsive Design</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/images/project 2.png" alt="GitHub Collaboration Project - Login Page" onerror="this.src='/images/default-project.png'">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="https://github.com/Menu-Makers/demo" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Code"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>GitHub Collaboration Project</h3>
+                        <p>A collaborative GitHub project demonstrating effective team workflow using Git, featuring a stylish login page for the Menu Makers web application.</p>
+                        <div class="project-tech">
+                            <span>Git</span>
+                            <span>GitHub</span>
+                            <span>HTML5</span>
+                            <span>CSS3</span>
+                            <span>Team Collaboration</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/images/project 3.png" alt="To-Do App - Task Management Application" onerror="this.src='/images/default-project.png'">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://menu-makers.github.io/To-Do-app/" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="https://github.com/Menu-Makers/To-Do-app" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Code"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>To-Do App</h3>
+                        <p>A modern task management application with intuitive interface for organizing daily tasks. Features task creation, editing, completion tracking, and local storage persistence.</p>
+                        <div class="project-tech">
+                            <span>HTML5</span>
+                            <span>CSS3</span>
+                            <span>JavaScript</span>
+                            <span>Local Storage</span>
+                            <span>DOM Manipulation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/images/project 4.png" alt="Team Portfolio Website" onerror="this.src='/images/default-project.png'">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" class="project-link" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link" aria-label="View Code"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>Team Portfolio Website</h3>
+                        <p>This very website! A modern, responsive portfolio showcasing our team's capabilities with integrated contact system.</p>
+                        <div class="project-tech">
+                            <span>HTML5</span>
+                            <span>CSS3</span>
+                            <span>JavaScript</span>
+                            <span>Node.js</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Skills & Technologies</h2>
+                <p>The tools and technologies we excel in</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3><i class="fas fa-paint-brush"></i> Frontend Development</h3>
+                    <div class="skill-tags">
+                        <span>HTML5</span>
+                        <span>CSS3</span>
+                        <span>JavaScript (ES6+)</span>
+                        <span>React.js</span>
+                        <span>Vue.js</span>
+                        <span>Angular</span>
+                        <span>TypeScript</span>
+                        <span>Sass/SCSS</span>
+                        <span>Bootstrap</span>
+                        <span>Responsive Design</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-server"></i> Backend Development</h3>
+                    <div class="skill-tags">
+                        <span>Node.js</span>
+                        <span>Express.js</span>
+                        <span>Python</span>
+                        <span>Django</span>
+                        <span>REST APIs</span>
+                        <span>GraphQL</span>
+                        <span>Microservices</span>
+                        <span>Socket.io</span>
+                        <span>JWT Authentication</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-database"></i> Database & Cloud</h3>
+                    <div class="skill-tags">
+                        <span>MongoDB</span>
+                        <span>PostgreSQL</span>
+                        <span>MySQL</span>
+                        <span>Firebase</span>
+                        <span>AWS</span>
+                        <span>Heroku</span>
+                        <span>Docker</span>
+                        <span>Redis</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-tools"></i> Tools & Workflow</h3>
+                    <div class="skill-tags">
+                        <span>Git & GitHub</span>
+                        <span>VS Code</span>
+                        <span>Figma</span>
+                        <span>Adobe XD</span>
+                        <span>Agile/Scrum</span>
+                        <span>Jest Testing</span>
+                        <span>Webpack</span>
+                        <span>npm/yarn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get In Touch</h2>
+                <p>Ready to start your next project? Let's discuss how we can help</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Let's Work Together</h3>
+                    <p>
+                        Whether you need a complete web application, UI/UX design, or technical consultation, 
+                        the Menu Makers team is here to bring your vision to life.
+                    </p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+            
+                            <i class="fa fa-envelope"></i>
+                            <div>
+                                <h4>Email Us</h4>
+                                <p>Menumakers17@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h4>Response Time</h4>
+                                <p>Within 24 hours</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <h4>Team Availability</h4>
+                                <p>Monday - Friday, 9 AM - 6 PM EST</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Team Member Avatars -->
+                    <div class="contact-team-avatars">
+                        <h4>Our Team</h4>
+                        <div class="team-avatars-grid">
+                            <div class="team-avatar">
+                                <img src="/images/jatinder%20image.png" alt="Jatinder Kaur" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI0MCIgZmlsbD0iIzAwZDRhYSIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMzIiIHI9IjEyIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBhdGggZD0iTTIwIDY1YzAtMTEgOS0yMCAyMC0yMHMyMCA5IDIwIDIwdjVIMjB2LTV6IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPg==';">
+                                <span>Jatinder</span>
+                            </div>
+                            <div class="team-avatar">
+                                <img src="/images/mansi-image.jpg" alt="Mansi Keer" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI0MCIgZmlsbD0iI2ZkNzlhOCIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMzIiIHI9IjEyIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBhdGggZD0iTTIwIDY1YzAtMTEgOS0yMCAyMC0yMHMyMCA5IDIwIDIwdjVIMjB2LTV6IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPg==';">
+                                <span>Mansi</span>
+                            </div>
+                            <div class="team-avatar">
+                                <img src="/images/madhusudan%20image.jpeg" alt="Madhusudan Mainali" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI0MCIgZmlsbD0iIzc0YjlmZiIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMzIiIHI9IjEyIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBhdGggZD0iTTIwIDY1YzAtMTEgOS0yMCAyMC0yMHMyMCA5IDIwIDIwdjVIMjB2LTV6IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPg==';">
+                                <span>Madhusudan</span>
+                            </div>
+                            <div class="team-avatar">
+                                <img src="/images/ramesh-image.png" alt="Ramesh Kumawat" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI0MCIgZmlsbD0iIzAwYjg5NCIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMzIiIHI9IjEyIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHBhdGggZD0iTTIwIDY1YzAtMTEgOS0yMCAyMC0yMHMyMCA5IDIwIDIwdjVIMjB2LTV6IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPg==';">
+                                <span>Ramesh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject *</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="team-member">Contact Preference</label>
+                        <select id="team-member" name="teamMember">
+                            <option value="company">Menu Makers Company</option>
+                            <option value="jatinder">Jatinder Kaur (Team Lead)</option>
+                            <option value="mansi">Mansi Keer (UI/UX Designer)</option>
+                            <option value="madhusudan">Madhusudan Mainali (QA Specialist)</option>
+                            <option value="ramesh">Ramesh Kumawat (Technical Lead)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="5" required placeholder="Tell us about your project..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Send Message</span>
+                        <span class="btn-loading">Sending...</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="/images/logo.png" alt="Menu Makers Logo" class="footer-logo-image" onerror="this.src='/images/logo.svg'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='block';};">
+                        <h3 style="display: none;">Menu Makers</h3>
+                    </div>
+                    <p>Creating exceptional web experiences through collaboration, innovation, and technical excellence.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#team">Team</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a >Web Development</a></li>
+                        <li><a>UI/UX Design</a></li>
+                        <li><a>Quality Assurance</a></li>
+                        <li><a>Project Management</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="footer-social">
+                        <a href="https://github.com/Menu-Makers" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                  
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Menu Makers. All rights reserved. | Built with ❤️ by the Menu Makers Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Success/Error Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <i class="modal-icon fas fa-check-circle"></i>
+                <h3 class="modal-title">Success!</h3>
+                <p class="modal-message">Thank you for your message! We'll get back to you soon.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Menu Makers - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>
+                        <i class="fas fa-chart-line"></i>
+                        Menu Makers Admin Dashboard
+                    </h1>
+                    <p>Manage client inquiries and track engagement metrics</p>
+                </div>
+                <div class="admin-actions">
+                    <span class="admin-user" id="adminUser">
+                        <i class="fas fa-user"></i> <span id="usernameDisplay">Admin</span>
+                    </span>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <h3 id="totalCount">-</h3>
+                <p>Total Inquiries</p>
+            </div>
+            <div class="stat-card pending">
+                <h3 id="pendingCount">-</h3>
+                <p>Pending Response</p>
+            </div>
+            <div class="stat-card responded">
+                <h3 id="respondedCount">-</h3>
+                <p>Responded</p>
+            </div>
+            <div class="stat-card today">
+                <h3 id="todayCount">-</h3>
+                <p>Today's Inquiries</p>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search inquiries...">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <select class="filter-select" id="statusFilter">
+                <option value="all">All Status</option>
+                <option value="new">New</option>
+                <option value="responded">Responded</option>
+            </select>
+
+            <select class="filter-select" id="teamFilter">
+                <option value="all">All Team Members</option>
+                <option value="company">Company</option>
+                <option value="jatinder">Jatinder</option>
+                <option value="mansi">Mansi</option>
+                <option value="madhusudan">Madhusudan</option>
+                <option value="ramesh">Ramesh</option>
+            </select>
+
+            <div class="auto-refresh">
+                <input type="checkbox" id="autoRefresh" checked>
+                <label for="autoRefresh">Auto Refresh (30s)</label>
+            </div>
+
+            <button class="refresh-btn" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            
+            <button class="refresh-btn" id="composeEmailBtn" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">
+                <i class="fas fa-envelope"></i>
+                Compose Email
+            </button>
+        </div>
+
+        <!-- Compose Email Section -->
+        <div id="composeEmailSection" class="compose-section" style="display: none;">
+            <div class="compose-header">
+                <h3><i class="fas fa-envelope-open-text"></i> Compose New Email</h3>
+                <button class="close-btn" id="closeComposeBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="emailComposeForm" class="compose-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emailTo">To:</label>
+                        <input type="email" id="emailTo" required placeholder="recipient@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailTemplate">Template:</label>
+                        <select id="emailTemplate">
+                            <option value="">-- Select Template --</option>
+                            <option value="welcome">Welcome Message</option>
+                            <option value="follow_up">Follow-up</option>
+                            <option value="quote">Project Quote</option>
+                            <option value="custom">Custom Message</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="emailSubject">Subject:</label>
+                    <input type="text" id="emailSubject" required placeholder="Email subject">
+                </div>
+                
+                <div class="form-group">
+                    <label for="emailMessage">Message:</label>
+                    <textarea id="emailMessage" required placeholder="Type your message here..." rows="8"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inquiryId">Related Inquiry ID (optional):</label>
+                        <input type="number" id="inquiryId" placeholder="Leave blank for new conversation">
+                    </div>
+                    <div class="form-group">
+                        <label for="replyTo">Reply-to Email (optional):</label>
+                        <input type="email" id="replyTo" placeholder="Optional custom reply-to address">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="action-btn send-btn">
+                        <i class="fas fa-paper-plane"></i> Send Email
+                    </button>
+                    <button type="button" class="action-btn" id="clearFormBtn">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                    <button type="button" class="action-btn" id="cancelComposeBtn">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Inquiries Container -->
+        <div class="inquiries-container">
+            <div class="inquiries-header">
+                <h2>
+                    <i class="fas fa-envelope"></i>
+                    Recent Inquiries
+                    <span id="lastUpdated" style="font-size: 0.8rem; font-weight: 400; color: #7f8c8d; margin-left: 10px;"></span>
+                </h2>
+            </div>
+            
+            <div id="inquiriesContent">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading inquiries...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let inquiries = [];
+        let filteredInquiries = [];
+        let autoRefreshInterval;
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadInquiries();
+            setupEventListeners();
+            startAutoRefresh();
+        });
+
+        // Check if user is authenticated
+        async function checkAuthentication() {
+            try {
+                const response = await fetch('/api/admin/auth-status');
+                const data = await response.json();
+                
+                if (!data.authenticated) {
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                // Update username display
+                if (data.username) {
+                    document.getElementById('usernameDisplay').textContent = data.username;
+                }
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('refreshBtn').addEventListener('click', loadInquiries);
+            document.getElementById('searchInput').addEventListener('input', filterInquiries);
+            document.getElementById('statusFilter').addEventListener('change', filterInquiries);
+            document.getElementById('teamFilter').addEventListener('change', filterInquiries);
+            document.getElementById('autoRefresh').addEventListener('change', toggleAutoRefresh);
+            
+            // Compose email event listeners
+            document.getElementById('composeEmailBtn').addEventListener('click', toggleComposeForm);
+            document.getElementById('closeComposeBtn').addEventListener('click', toggleComposeForm);
+            document.getElementById('cancelComposeBtn').addEventListener('click', toggleComposeForm);
+            document.getElementById('clearFormBtn').addEventListener('click', clearComposeForm);
+            document.getElementById('emailTemplate').addEventListener('change', loadTemplate);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        }
+
+        // Handle logout
+        async function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    const response = await fetch('/api/admin/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        showNotification('Logged out successfully!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        }, 1000);
+                    } else {
+                        showNotification('Error logging out. Please try again.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    showNotification('Error logging out. Please try again.', 'error');
+                }
+            }
+        }
+
+        async function loadInquiries() {
+            try {
+                showLoading();
+                const response = await fetch('/api/admin/inquiries');
+                const data = await response.json();
+                
+                if (data.success) {
+                    inquiries = data.inquiries || [];
+                    updateStatistics();
+                    filterInquiries();
+                    updateLastUpdated();
+                } else {
+                    showError('Failed to load inquiries');
+                }
+            } catch (error) {
+                console.error('Error loading inquiries:', error);
+                showError('Network error occurred');
+            }
+        }
+
+        function updateStatistics() {
+            const total = inquiries.length;
+            const pending = inquiries.filter(i => i.status === 'new').length;
+            const responded = inquiries.filter(i => i.status === 'responded').length;
+            const today = inquiries.filter(i => {
+                const today = new Date().toDateString();
+                const inquiryDate = new Date(i.created_at).toDateString();
+                return today === inquiryDate;
+            }).length;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('respondedCount').textContent = responded;
+            document.getElementById('todayCount').textContent = today;
+        }
+
+        function filterInquiries() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const teamFilter = document.getElementById('teamFilter').value;
+
+            filteredInquiries = inquiries.filter(inquiry => {
+                const matchesSearch = !searchTerm || 
+                    inquiry.name.toLowerCase().includes(searchTerm) ||
+                    inquiry.email.toLowerCase().includes(searchTerm) ||
+                    inquiry.subject.toLowerCase().includes(searchTerm) ||
+                    inquiry.message.toLowerCase().includes(searchTerm);
+
+                const matchesStatus = statusFilter === 'all' || inquiry.status === statusFilter;
+                const matchesTeam = teamFilter === 'all' || inquiry.team_member === teamFilter;
+
+                return matchesSearch && matchesStatus && matchesTeam;
+            });
+
+            renderInquiries();
+        }
+
+        function renderInquiries() {
+            const container = document.getElementById('inquiriesContent');
+            
+            if (filteredInquiries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No inquiries found</h3>
+                        <p>No inquiries match your current filters, or no inquiries have been submitted yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const inquiriesHtml = filteredInquiries.map(inquiry => {
+                const createdAt = new Date(inquiry.created_at);
+                const timeAgo = getTimeAgo(createdAt);
+                const statusClass = inquiry.status === 'new' ? 'pending' : 'responded';
+                
+                return `
+                    <div class="inquiry-card ${statusClass}">
+                        <div class="inquiry-header">
+                            <div class="inquiry-info">
+                                <h3>${escapeHtml(inquiry.name)} <span class="reference-id">#${inquiry.id}</span></h3>
+                                <div class="inquiry-meta">
+                                    <span><i class="fas fa-envelope"></i> ${escapeHtml(inquiry.email)}</span>
+                                    ${inquiry.phone ? `<span><i class="fas fa-phone"></i> ${escapeHtml(inquiry.phone)}</span>` : ''}
+                                    <span><i class="fas fa-clock"></i> ${timeAgo}</span>
+                                    <span><i class="fas fa-user"></i> ${getTeamMemberName(inquiry.team_member)}</span>
+                                </div>
+                            </div>
+                            <div class="status-badge ${inquiry.status}">
+                                ${inquiry.status}
+                            </div>
+                        </div>
+                        
+                        <div class="inquiry-content">
+                            <h4><i class="fas fa-comment"></i> Subject: ${escapeHtml(inquiry.subject || 'General Inquiry')}</h4>
+                            <div class="inquiry-message">
+                                "${escapeHtml(inquiry.message)}"
+                            </div>
+                        </div>
+                        
+                        <div class="inquiry-actions">
+                            <button class="action-btn reply" data-action="reply" data-email="${escapeHtml(inquiry.email)}" data-inquiry-id="${inquiry.id}">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                            ${inquiry.status === 'new' ? `
+                                <button class="action-btn mark-responded" data-action="mark-responded" data-inquiry-id="${inquiry.id}">
+                                    <i class="fas fa-check"></i> Mark as Responded
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = inquiriesHtml;
+
+            // Add event listeners to action buttons
+            addActionButtonListeners();
+        }
+
+        function addActionButtonListeners() {
+            // Add event listeners for reply buttons
+            document.querySelectorAll('[data-action="reply"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const email = this.getAttribute('data-email');
+                    const inquiryId = this.getAttribute('data-inquiry-id');
+                    replyToInquiry(email, inquiryId);
+                });
+            });
+
+            // Add event listeners for mark as responded buttons
+            document.querySelectorAll('[data-action="mark-responded"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const inquiryId = this.getAttribute('data-inquiry-id');
+                    markAsResponded(inquiryId, this);
+                });
+            });
+        }
+
+        function showLoading() {
+            document.getElementById('inquiriesContent').innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading inquiries...</p>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('inquiriesContent').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffInMs = now - date;
+            const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+            const diffInDays = Math.floor(diffInHours / 24);
+
+            if (diffInDays > 0) {
+                return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+            } else if (diffInHours > 0) {
+                return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+            } else {
+                const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+                return diffInMinutes > 0 ? `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago` : 'Just now';
+            }
+        }
+
+        function getTeamMemberName(teamMember) {
+            const names = {
+                'company': 'Menu Makers Company',
+                'jatinder': 'Jatinder Kaur',
+                'mansi': 'Mansi Keer',
+                'madhusudan': 'Madhusudan Mainali',
+                'ramesh': 'Ramesh Kumawat'
+            };
+            return names[teamMember] || teamMember;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updateLastUpdated() {
+            const now = new Date();
+            document.getElementById('lastUpdated').textContent = `Last updated: ${now.toLocaleTimeString()}`;
+        }
+
+        function replyToInquiry(email, inquiryId) {
+            console.log('Reply function called with:', email, inquiryId);
+            
+            const subject = `Re: Your inquiry #${inquiryId} - Menu Makers`;
+            const body = `Dear Client,
+
+Thank you for your inquiry #${inquiryId}. We've received your message and would like to respond to your request.
+
+Best regards,
+Menu Makers Team
+menumakers17@gmail.com`;
+            
+            const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            try {
+                window.open(mailtoLink);
+                showNotification('Reply email opened in your default email client.', 'success');
+            } catch (error) {
+                console.error('Error opening email client:', error);
+                showNotification('Could not open email client. Please copy the email manually: ' + email, 'error');
+            }
+        }
+
+        async function markAsResponded(inquiryId, buttonElement) {
+            console.log('Mark as responded function called with:', inquiryId, buttonElement);
+            
+            try {
+                // Show loading state
+                const button = buttonElement;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+                button.disabled = true;
+
+                console.log('Sending PUT request to:', `/api/admin/inquiries/${inquiryId}/status`);
+
+                const response = await fetch(`/api/admin/inquiries/${inquiryId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: 'responded' })
+                });
+
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response data:', result);
+
+                if (result.success) {
+                    showNotification(`Inquiry #${inquiryId} marked as responded!`, 'success');
+                    // Refresh the inquiries list
+                    await loadInquiries();
+                } else {
+                    showNotification(result.message || 'Failed to update inquiry status', 'error');
+                    // Restore button state if failed
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+
+            } catch (error) {
+                console.error('Error marking as responded:', error);
+                showNotification('Network error occurred while updating status', 'error');
+                
+                // Restore button state
+                buttonElement.innerHTML = '<i class="fas fa-check"></i> Mark as Responded';
+                buttonElement.disabled = false;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // Add event listener to close button
+            const closeButton = notification.querySelector('.notification-close');
+            closeButton.addEventListener('click', () => {
+                notification.remove();
+            });
+
+            // Add notification styles if not already present
+            if (!document.getElementById('notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.innerHTML = `
+                    .notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: white;
+                        padding: 15px 20px;
+                        border-radius: 12px;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 15px;
+                        min-width: 300px;
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease;
+                        border-left: 4px solid;
+                    }
+                    
+                    .notification-success { border-left-color: #27ae60; }
+                    .notification-error { border-left-color: #e74c3c; }
+                    .notification-info { border-left-color: #3498db; }
+                    
+                    .notification-content {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        flex: 1;
+                    }
+                    
+                    .notification-success .notification-content i { color: #27ae60; }
+                    .notification-error .notification-content i { color: #e74c3c; }
+                    .notification-info .notification-content i { color: #3498db; }
+                    
+                    .notification-close {
+                        background: none;
+                        border: none;
+                        cursor: pointer;
+                        padding: 5px;
+                        border-radius: 6px;
+                        transition: background-color 0.3s ease;
+                    }
+                    
+                    .notification-close:hover {
+                        background: #f1f1f1;
+                    }
+                    
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // Add notification to body
+            document.body.appendChild(notification);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.animation = 'slideIn 0.3s ease reverse';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        function startAutoRefresh() {
+            autoRefreshInterval = setInterval(() => {
+                if (document.getElementById('autoRefresh').checked) {
+                    loadInquiries();
+                }
+            }, 30000); // 30 seconds
+        }
+
+        function toggleAutoRefresh() {
+            if (document.getElementById('autoRefresh').checked) {
+                startAutoRefresh();
+            } else {
+                clearInterval(autoRefreshInterval);
+            }
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            clearInterval(autoRefreshInterval);
+        });
+        // Compose Email Functions
+        function toggleComposeForm() {
+            const composeSection = document.getElementById('composeEmailSection');
+            if (composeSection.style.display === 'none') {
+                composeSection.style.display = 'block';
+                composeSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                composeSection.style.display = 'none';
+            }
+        }
+
+        function loadTemplate() {
+            const template = document.getElementById('emailTemplate').value;
+            const subjectField = document.getElementById('emailSubject');
+            const messageField = document.getElementById('emailMessage');
+
+            const templates = {
+                welcome: {
+                    subject: 'Welcome to Menu Makers - Let\'s Create Something Amazing Together!',
+                    message: 'Dear Valued Client,\n\nThank you for choosing Menu Makers for your culinary journey! We\'re excited to help bring your vision to life.\n\nOur team is ready to discuss your project requirements and create a customized solution that exceeds your expectations. We\'ll be in touch shortly to schedule a consultation.\n\nBest regards,\nThe Menu Makers Team'
+                },
+                follow_up: {
+                    subject: 'Following Up on Your Menu Makers Inquiry',
+                    message: 'Dear Client,\n\nI hope this message finds you well. I wanted to follow up on your recent inquiry with Menu Makers.\n\nWe\'re still very interested in working with you on your project and would love to discuss how we can help achieve your goals.\n\nPlease let me know if you have any questions or if you\'d like to schedule a call to discuss your requirements in more detail.\n\nLooking forward to hearing from you!\n\nBest regards,\nThe Menu Makers Team'
+                },
+                quote: {
+                    subject: 'Your Custom Quote from Menu Makers',
+                    message: 'Dear Client,\n\nThank you for your interest in our services. Based on our discussion, I\'ve prepared a detailed quote for your project.\n\nOur proposal includes:\n- Custom menu design\n- Professional consultation\n- Revisions and refinements\n- Final delivery in multiple formats\n\nI\'ll be attaching the detailed quote to this email. Please review it and let me know if you have any questions.\n\nWe\'re excited about the possibility of working together!\n\nBest regards,\nThe Menu Makers Team'
+                },
+                custom: {
+                    subject: '',
+                    message: ''
+                }
+            };
+
+            if (templates[template]) {
+                subjectField.value = templates[template].subject;
+                messageField.value = templates[template].message;
+            }
+        }
+
+        function clearComposeForm() {
+            document.getElementById('emailComposeForm').reset();
+        }
+
+        // Add email compose form event listener after DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle compose form submission
+            document.getElementById('emailComposeForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = e.target.querySelector('.send-btn');
+                const originalText = submitBtn.innerHTML;
+                
+                try {
+                    // Show loading state
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    submitBtn.disabled = true;
+
+                    const formData = {
+                        to: document.getElementById('emailTo').value,
+                        subject: document.getElementById('emailSubject').value,
+                        message: document.getElementById('emailMessage').value,
+                        inquiryId: document.getElementById('inquiryId').value || null,
+                        replyTo: document.getElementById('replyTo').value || null
+                    };
+
+                    const response = await fetch('/api/admin/send-email', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        showNotification('Email sent successfully!', 'success');
+                        clearComposeForm();
+                        toggleComposeForm();
+                        // Refresh inquiries to show updated status if inquiry ID was provided
+                        if (formData.inquiryId) {
+                            loadInquiries();
+                        }
+                    } else {
+                        showNotification('Failed to send email: ' + result.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error sending email:', error);
+                    showNotification('Error sending email. Please try again.', 'error');
+                } finally {
+                    // Restore button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
