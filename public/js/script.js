@@ -693,18 +693,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     preloadImages();
 
-    // Service Worker registration disabled for development
-    // Uncomment below for production PWA features
-    /*
+    // NO CACHING - Ensure real-time loading
+    // Disable all browser caching mechanisms
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
+        // Unregister any existing service workers to prevent caching
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+                console.log('Service Worker unregistered for real-time loading');
+            }
+        });
     }
-    */
+
+    // Force cache clearing on page load
+    if ('caches' in window) {
+        caches.keys().then(function(names) {
+            for (let name of names) {
+                caches.delete(name);
+            }
+        });
+    }
+
+    // Add cache-busting to all dynamic content
+    const timestamp = new Date().getTime();
+    const dynamicImages = document.querySelectorAll('img[data-src]');
+    dynamicImages.forEach(img => {
+        if (img.dataset.src) {
+            img.src = img.dataset.src + '?v=' + timestamp;
+        }
+    });
 
 });

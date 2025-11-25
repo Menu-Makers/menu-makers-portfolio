@@ -134,6 +134,17 @@ try {
     
     const app = express();
     
+    // GLOBAL NO-CACHE MIDDLEWARE - Force real-time loading for EVERYTHING
+    app.use((req, res, next) => {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        res.setHeader('Last-Modified', new Date().toUTCString());
+        res.setHeader('ETag', ''); // Disable ETag completely
+        console.log(`🚫 NO-CACHE applied to: ${req.url}`);
+        next();
+    });
+    
     // Session configuration
     app.use(session({
         secret: process.env.SESSION_SECRET || 'menumakers-super-secret-key-2024',
@@ -164,24 +175,20 @@ try {
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
     
-    // Serve static files from public directory with cache control
+    // Serve static files from public directory with NO CACHING
     app.use(express.static(path.join(__dirname, 'public'), {
         setHeaders: (res, path) => {
-            // Prevent caching for HTML files
-            if (path.endsWith('.html')) {
-                res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private');
-                res.setHeader('Pragma', 'no-cache');
-                res.setHeader('Expires', '0');
-                res.setHeader('Last-Modified', new Date().toUTCString());
-            }
-            // Allow caching for other static assets
-            else {
-                res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes
-            }
+            // DISABLE ALL CACHING - Force real-time loading
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+            res.setHeader('Last-Modified', new Date().toUTCString());
+            res.setHeader('ETag', ''); // Disable ETag
+            console.log(`🚫 No-cache serving: ${path}`);
         }
     }));
     
-    // Explicitly serve images directory with proper headers
+    // Explicitly serve images directory with NO CACHING
     app.use('/images', express.static(path.join(__dirname, 'public', 'images'), {
         setHeaders: (res, path) => {
             // Set proper content type for images
@@ -192,9 +199,12 @@ try {
             } else if (path.endsWith('.svg')) {
                 res.setHeader('Content-Type', 'image/svg+xml');
             }
-            // Allow images to be cached
-            res.setHeader('Cache-Control', 'public, max-age=3600');
-            console.log(`📸 Serving image: ${path}`);
+            // DISABLE ALL CACHING FOR IMAGES TOO
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+            res.setHeader('ETag', ''); // Disable ETag
+            console.log(`📸 No-cache serving image: ${path}`);
         }
     }));
 
@@ -425,6 +435,14 @@ try {
 
     // Contact form endpoint with database storage
     app.post('/api/contact', contactFormLimit, async (req, res) => {
+        console.log('📧 Contact form submission received');
+        console.log('🔍 Environment status:', {
+            EMAIL_USER: !!process.env.EMAIL_USER,
+            EMAIL_PASS: !!process.env.EMAIL_PASS,
+            NODE_ENV: process.env.NODE_ENV,
+            transporterReady: !!transporter
+        });
+        
         try {
             const { name, email, subject, message, teamMember } = req.body;
 
@@ -628,9 +646,29 @@ try {
 
         } catch (error) {
             console.error('❌ Contact form error:', error);
+            console.error('❌ Error stack:', error.stack);
+            console.error('❌ Error details:', {
+                message: error.message,
+                code: error.code,
+                errno: error.errno,
+                syscall: error.syscall,
+                hostname: error.hostname,
+                port: error.port
+            });
+            
+            // Log environment variables status (without exposing values)
+            console.error('🔍 Environment check:', {
+                EMAIL_USER: !!process.env.EMAIL_USER,
+                EMAIL_PASS: !!process.env.EMAIL_PASS,
+                NODE_ENV: process.env.NODE_ENV,
+                EMAIL_USER_LENGTH: process.env.EMAIL_USER ? process.env.EMAIL_USER.length : 0,
+                EMAIL_PASS_LENGTH: process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : 0
+            });
+            
             res.status(500).json({
                 success: false,
-                message: 'Sorry, there was an error processing your request. Please try again later.'
+                message: 'Sorry, there was an error processing your request. Please try again later.',
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
             });
         }
     });
