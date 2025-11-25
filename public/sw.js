@@ -1,27 +1,39 @@
-// Simple service worker for Menu Makers portfolio
-const CACHE_NAME = 'menu-makers-v1';
+// Development-friendly service worker for Menu Makers portfolio
+const CACHE_NAME = 'menu-makers-dev-v1';
 const urlsToCache = [
-  '/',
-  '/style.css',
-  '/script.js',
-  '/images/',
+  // Minimal caching for development
 ];
 
-// Install event
+// Install event - skip caching in development
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
-  );
+  // Skip waiting to activate immediately
+  self.skipWaiting();
 });
 
-// Fetch event
+// Activate event - clear old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          // Delete all caches
+          return caches.delete(cacheName);
+        })
+      );
+    })
+  );
+  // Take control of all pages immediately
+  return self.clients.claim();
+});
+
+// Fetch event - always fetch from network (no caching)
 self.addEventListener('fetch', (event) => {
+  // Always fetch from network to get fresh content
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
+    fetch(event.request)
+      .catch(() => {
+        // Only use cache as fallback for offline scenarios
+        return caches.match(event.request);
       })
   );
 });

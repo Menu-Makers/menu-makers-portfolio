@@ -573,8 +573,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('scroll', debouncedScroll);
 
-    // Loading animation
-    window.addEventListener('load', function() {
+    // Loading animation - Multiple event listeners to ensure loading state clears
+    function clearLoadingState() {
         document.body.classList.add('loaded');
         
         // Animate hero elements
@@ -591,7 +591,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (heroButtons) {
             setTimeout(() => heroButtons.style.opacity = '1', 300);
         }
-    });
+        
+        // Remove any loading overlays or spinners
+        const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
+        loadingElements.forEach(el => el.remove());
+        
+        console.log('Loading state cleared');
+    }
+
+    // Try multiple approaches to clear loading state
+    window.addEventListener('load', clearLoadingState);
+    
+    // Fallback: Clear loading state after DOM is ready + small delay
+    if (document.readyState === 'complete') {
+        clearLoadingState();
+    } else {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(clearLoadingState, 1000); // 1 second fallback
+        });
+    }
+    
+    // Additional fallback after 3 seconds regardless of load state
+    setTimeout(clearLoadingState, 3000);
 
     // Touch support for mobile devices
     if ('ontouchstart' in window) {
@@ -672,7 +693,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     preloadImages();
 
-    // Service Worker registration (for future PWA features)
+    // Service Worker registration disabled for development
+    // Uncomment below for production PWA features
+    /*
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js')
             .then(registration => {
@@ -682,5 +705,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('SW registration failed: ', registrationError);
             });
     }
+    */
 
 });

@@ -1,4 +1,4 @@
-/* Reset and Base Styles */
+/* CSS File - Last updated: November 2025 */
 * {
     margin: 0;
     padding: 0;
@@ -304,10 +304,10 @@ a {
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 1000;
     padding: 0.8rem 0; /* Reduced padding for better alignment */
     transition: var(--transition);
@@ -327,9 +327,9 @@ a {
 }
 
 .navbar.scrolled {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Dark mode transparent navbar */
@@ -396,7 +396,6 @@ a {
     align-items: center;
     margin: 0;
     padding: 0;
-   
 }
 
 .nav-item {
@@ -1898,16 +1897,17 @@ a {
         left: -100%;
         top: 70px;
         flex-direction: column;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        background: rgb(190 216 224 / 72%);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
         width: 100%;
         text-align: center;
         transition: var(--transition);
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
         padding: 2rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.6);
         height: auto;
+        border-radius: 0 0 20px 20px;
     }
     
     .nav-menu.active {
