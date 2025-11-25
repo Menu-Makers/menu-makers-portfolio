@@ -112,17 +112,64 @@ db.serialize(() => {
 console.log('📊 Database initialization complete');
 
 try {
+    // Import both Nodemailer and SendGrid
     const nodemailer = require('nodemailer');
-    console.log('✅ Nodemailer imported');
+    const sgMail = require('@sendgrid/mail');
+    console.log('✅ Email libraries imported');
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: getEnvVar('EMAIL_USER'),
-            pass: getEnvVar('EMAIL_PASS')
+    // Configure email service based on environment
+    let emailService = null;
+    let transporter = null;
+
+    if (process.env.NODE_ENV === 'production' && getEnvVar('SENDGRID_API_KEY')) {
+        // Use SendGrid for production
+        sgMail.setApiKey(getEnvVar('SENDGRID_API_KEY'));
+        emailService = 'sendgrid';
+        console.log('✅ SendGrid configured for production');
+    } else {
+        // Use Gmail for development
+        transporter = nodemailer.createTransporter({
+            service: 'gmail',
+            auth: {
+                user: getEnvVar('EMAIL_USER'),
+                pass: getEnvVar('EMAIL_PASS')
+            }
+        });
+        emailService = 'gmail';
+        console.log('✅ Gmail transporter configured for development');
+    }
+
+    console.log(`📧 Email service: ${emailService}`);
+
+    // Universal email sending function
+    async function sendEmail(mailOptions) {
+        try {
+            if (emailService === 'sendgrid') {
+                // SendGrid format
+                const sendGridMessage = {
+                    to: mailOptions.to,
+                    from: {
+                        email: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com',
+                        name: 'Menu Makers'
+                    },
+                    subject: mailOptions.subject,
+                    html: mailOptions.html
+                };
+                
+                console.log('📧 Sending email via SendGrid...');
+                await sgMail.send(sendGridMessage);
+                console.log('✅ Email sent successfully via SendGrid');
+            } else {
+                // Nodemailer format (for development)
+                console.log('📧 Sending email via Gmail...');
+                await transporter.sendMail(mailOptions);
+                console.log('✅ Email sent successfully via Gmail');
+            }
+        } catch (error) {
+            console.error('❌ Email sending failed:', error);
+            throw error;
         }
-    });
-    console.log('✅ Transporter created successfully');
+    }
 
     // Setup Express with static files
     const express = require('express');
@@ -439,8 +486,9 @@ try {
         console.log('🔍 Environment status:', {
             EMAIL_USER: !!process.env.EMAIL_USER,
             EMAIL_PASS: !!process.env.EMAIL_PASS,
+            SENDGRID_API_KEY: !!process.env.SENDGRID_API_KEY,
             NODE_ENV: process.env.NODE_ENV,
-            transporterReady: !!transporter
+            emailService: emailService
         });
         
         try {
@@ -610,9 +658,9 @@ try {
                 `
             };
 
-            // Send emails
-            await transporter.sendMail(teamMailOptions);
-            await transporter.sendMail(userMailOptions);
+            // Send emails using universal function
+            await sendEmail(teamMailOptions);
+            await sendEmail(userMailOptions);
 
             // Log interaction in database
             const stmt = db.prepare(`
@@ -915,8 +963,8 @@ try {
                 `
             };
 
-            // Send the email
-            await transporter.sendMail(mailOptions);
+            // Send the email using universal function
+            await sendEmail(mailOptions);
             console.log(`📧 Email sent from admin panel to: ${to}`);
 
             // Log interaction in database if this is a reply to an inquiry
