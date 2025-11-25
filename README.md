@@ -135,13 +135,17 @@ To deploy only the frontend to GitHub Pages:
 **GitHub Pages Setup:**
 ```bash
 # Push to GitHub
-git remote add origin https://github.com/yourusername/menu-makers.git
+git remote add origin https://github.com/Menu-Makers/menu-makers-portfolio.git
 git branch -M main
 git push -u origin main
 
 # Enable GitHub Pages in repository settings
 # Choose: Deploy from a branch → main → / (root)
 ```
+
+**Live Demo:** https://menu-makers.github.io/menu-makers-portfolio/
+
+**Note:** The GitHub Pages version will show the portfolio website but contact form and admin features require the full-stack deployment.
 
 ### Option 3: Hybrid Deployment
 - Frontend: GitHub Pages (static portfolio)
