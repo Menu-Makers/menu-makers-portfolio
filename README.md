@@ -116,8 +116,42 @@ To access the admin dashboard:
 
 ## Deployment Options
 
-### Option 1: Full-Stack Deployment (Recommended)
-For the complete project with backend functionality, deploy to:
+### Option 1: Automatic Deployment with GitHub Actions (Recommended)
+
+This project includes CI/CD pipelines for automatic deployment:
+
+**🚀 Railway Deployment (Free Tier):**
+1. Fork/clone this repository
+2. Sign up at [Railway.app](https://railway.app)
+3. Connect your GitHub repository to Railway
+4. Set environment variables in Railway dashboard:
+   ```
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_PASS=your-app-password
+   ADMIN_USERNAME=admin
+   ADMIN_PASSWORD=your-secure-password
+   SESSION_SECRET=your-random-secret
+   ```
+5. Push to `main` branch - GitHub Actions will automatically deploy!
+
+**🎯 Render Deployment (Alternative):**
+1. Sign up at [Render.com](https://render.com)
+2. Connect your GitHub repository
+3. Use the included `render.yaml` configuration
+4. Set environment variables in Render dashboard
+5. Deploy automatically on push to `main`
+
+### GitHub Actions Secrets Required:
+Add these in your GitHub repository settings → Secrets:
+- `RAILWAY_TOKEN` (from Railway dashboard)
+- `EMAIL_USER` (Gmail address)
+- `EMAIL_PASS` (Gmail app password)  
+- `ADMIN_USERNAME` (admin username)
+- `ADMIN_PASSWORD` (admin password)
+- `SESSION_SECRET` (random string)
+
+### Option 2: Manual Full-Stack Deployment
+For manual deployment to:
 
 - **Railway** - `railway deploy` (Modern, easy deployment)
 - **Heroku** - Full-stack deployment with SQLite
