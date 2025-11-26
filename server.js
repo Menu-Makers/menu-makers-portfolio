@@ -141,28 +141,78 @@ try {
 
     console.log(`📧 Email service: ${emailService}`);
 
-    // Universal email sending function
+    // Universal email sending function with anti-spam improvements
     async function sendEmail(mailOptions) {
         try {
             if (emailService === 'sendgrid') {
-                // SendGrid format
+                // SendGrid format with anti-spam improvements
                 const sendGridMessage = {
                     to: mailOptions.to,
                     from: {
                         email: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com',
                         name: 'Menu Makers'
                     },
+                    replyTo: {
+                        email: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com',
+                        name: 'Menu Makers Support'
+                    },
                     subject: mailOptions.subject,
-                    html: mailOptions.html
+                    html: mailOptions.html,
+                    // Anti-spam improvements
+                    categories: ['contact-form', 'business-inquiry'],
+                    customArgs: {
+                        source: 'contact-form',
+                        version: '1.0'
+                    },
+                    // Text version for better deliverability
+                    text: mailOptions.text || mailOptions.html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
+                    // Tracking settings
+                    trackingSettings: {
+                        clickTracking: {
+                            enable: false
+                        },
+                        openTracking: {
+                            enable: false
+                        }
+                    },
+                    // Mail settings for better delivery
+                    mailSettings: {
+                        sandboxMode: {
+                            enable: false
+                        },
+                        spamCheck: {
+                            enable: true,
+                            threshold: 1
+                        }
+                    }
                 };
                 
-                console.log('📧 Sending email via SendGrid...');
+                console.log('📧 Sending email via SendGrid with anti-spam settings...');
                 await sgMail.send(sendGridMessage);
                 console.log('✅ Email sent successfully via SendGrid');
             } else {
-                // Nodemailer format (for development)
-                console.log('📧 Sending email via Gmail...');
-                await transporter.sendMail(mailOptions);
+                // Nodemailer format with anti-spam improvements
+                const enhancedMailOptions = {
+                    ...mailOptions,
+                    // Add text version for better deliverability
+                    text: mailOptions.text || mailOptions.html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
+                    // Add proper headers
+                    headers: {
+                        'X-Priority': '3',
+                        'X-MSMail-Priority': 'Normal',
+                        'Importance': 'Normal',
+                        'List-Unsubscribe': '<mailto:unsubscribe@menumakers17.gmail.com>',
+                        'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN',
+                        'X-Mailer': 'Menu Makers Contact System'
+                    },
+                    // Proper reply-to
+                    replyTo: mailOptions.replyTo || getEnvVar('EMAIL_USER'),
+                    // Message ID for tracking
+                    messageId: mailOptions.messageId
+                };
+                
+                console.log('📧 Sending email via Gmail with anti-spam settings...');
+                await transporter.sendMail(enhancedMailOptions);
                 console.log('✅ Email sent successfully via Gmail');
             }
         } catch (error) {
@@ -180,6 +230,11 @@ try {
     const session = require('express-session');
     
     const app = express();
+    
+    // Set trust proxy for production (needed for rate limiting and IP detection)
+    if (process.env.NODE_ENV === 'production') {
+        app.set('trust proxy', 1);
+    }
     
     // GLOBAL NO-CACHE MIDDLEWARE - Force real-time loading for EVERYTHING
     app.use((req, res, next) => {
@@ -556,106 +611,198 @@ try {
             const inquiryId = await insertInquiry;
             console.log(`📊 Inquiry stored in database with ID: ${inquiryId}`);
 
-            // Determine recipient based on team member selection
+            // Send all inquiries to your main Gmail address
             let recipientEmail = 'menumakers17@gmail.com';
-            let recipientName = 'Menu Makers Company';
+            let recipientName = 'Menu Makers Team';
 
+            // Optional: You can still track which team member was selected for reference
+            let selectedTeamMember = 'Menu Makers Company';
             switch (teamMember) {
                 case 'jatinder':
-                    recipientEmail = getEnvVar('JATINDER_EMAIL') || 'menumakers17@gmail.com';
-                    recipientName = 'Jatinder Kaur';
+                    selectedTeamMember = 'Jatinder Kaur';
                     break;
                 case 'mansi':
-                    recipientEmail = getEnvVar('MANSI_EMAIL') || 'menumakers17@gmail.com';
-                    recipientName = 'Mansi Keer';
+                    selectedTeamMember = 'Mansi Keer';
                     break;
                 case 'madhusudan':
-                    recipientEmail = getEnvVar('MADHUSUDAN_EMAIL') || 'menumakers17@gmail.com';
-                    recipientName = 'Madhusudan Mainali';
+                    selectedTeamMember = 'Madhusudan Mainali';
                     break;
                 case 'ramesh':
-                    recipientEmail = getEnvVar('RAMESH_EMAIL') || 'menumakers17@gmail.com';
-                    recipientName = 'Ramesh Kumawat';
+                    selectedTeamMember = 'Ramesh Kumawat';
                     break;
                 default:
-                    recipientEmail = 'menumakers17@gmail.com';
-                    recipientName = 'Menu Makers Company';
+                    selectedTeamMember = 'Menu Makers Company';
             }
 
-            // Enhanced email to team member with inquiry ID
+            // Enhanced email to your Gmail with anti-spam improvements
             const teamMailOptions = {
-                from: getEnvVar('EMAIL_USER'),
+                from: {
+                    name: 'Menu Makers Contact System',
+                    address: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com'
+                },
                 to: recipientEmail,
-                subject: `[#${inquiryId}] New Contact: ${subject || 'General Inquiry'}`,
+                replyTo: {
+                    name: name,
+                    address: email
+                },
+                subject: `New Business Inquiry #${inquiryId} - ${subject || 'General Inquiry'}`,
+                text: `
+New Client Inquiry #${inquiryId}
+
+Client Information:
+Name: ${name}
+Email: ${email}
+Subject: ${subject || 'General Inquiry'}
+Originally requested: ${selectedTeamMember}
+Inquiry ID: #${inquiryId}
+
+Message:
+${message}
+
+Reply to: ${email}
+Received: ${new Date().toLocaleString()}
+Reference: #${inquiryId}
+
+--
+Menu Makers - Professional Web Development Services
+Contact: menumakers17@gmail.com
+                `,
                 html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                        <div style="background: linear-gradient(135deg, #00cec9 0%, #00d4aa 50%, #55efc4 100%); padding: 20px; text-align: center;">
-                            <h1 style="color: white; margin: 0;">New Client Inquiry #${inquiryId}</h1>
+                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+                        <div style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); padding: 25px; text-align: center; border-radius: 8px 8px 0 0;">
+                            <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 600;">New Business Inquiry</h1>
+                            <p style="color: #ecf0f1; margin: 5px 0 0 0; font-size: 14px;">Reference #${inquiryId}</p>
                         </div>
-                        <div style="padding: 20px; background: #f8f9fa;">
-                            <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                                <h2 style="color: #333; margin-top: 0;">Client Information</h2>
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px 0; font-weight: bold;">Name:</td><td style="padding: 8px 0;">${name}</td></tr>
-                                    <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px 0; font-weight: bold;">Email:</td><td style="padding: 8px 0;">${email}</td></tr>
-                                    <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px 0; font-weight: bold;">Subject:</td><td style="padding: 8px 0;">${subject || 'General Inquiry'}</td></tr>
-                                    <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px 0; font-weight: bold;">Assigned to:</td><td style="padding: 8px 0;">${recipientName}</td></tr>
-                                    <tr><td style="padding: 8px 0; font-weight: bold;">Inquiry ID:</td><td style="padding: 8px 0;">#${inquiryId}</td></tr>
+                        <div style="padding: 25px; background: #f8f9fa; border-radius: 0 0 8px 8px;">
+                            <div style="background: white; padding: 20px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #3498db;">
+                                <h2 style="color: #2c3e50; margin-top: 0; font-size: 18px;">Client Information</h2>
+                                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                                    <tr style="border-bottom: 1px solid #ecf0f1;"><td style="padding: 8px 0; font-weight: 600; color: #34495e;">Name:</td><td style="padding: 8px 0; color: #2c3e50;">${name}</td></tr>
+                                    <tr style="border-bottom: 1px solid #ecf0f1;"><td style="padding: 8px 0; font-weight: 600; color: #34495e;">Email:</td><td style="padding: 8px 0; color: #2c3e50;">${email}</td></tr>
+                                    <tr style="border-bottom: 1px solid #ecf0f1;"><td style="padding: 8px 0; font-weight: 600; color: #34495e;">Subject:</td><td style="padding: 8px 0; color: #2c3e50;">${subject || 'General Inquiry'}</td></tr>
+                                    <tr style="border-bottom: 1px solid #ecf0f1;"><td style="padding: 8px 0; font-weight: 600; color: #34495e;">Originally requested:</td><td style="padding: 8px 0; color: #e67e22; font-weight: 600;">${selectedTeamMember}</td></tr>
+                                    <tr><td style="padding: 8px 0; font-weight: 600; color: #34495e;">Reference:</td><td style="padding: 8px 0; color: #2c3e50;">#${inquiryId}</td></tr>
                                 </table>
                             </div>
                             
-                            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #00d4aa;">
-                                <h3 style="color: #333; margin-top: 0;">Message:</h3>
-                                <p style="line-height: 1.6; margin: 0;">${message}</p>
+                            <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #27ae60;">
+                                <h3 style="color: #2c3e50; margin-top: 0; font-size: 16px;">Client Message:</h3>
+                                <p style="line-height: 1.6; margin: 0; color: #2c3e50; background: #f8f9fa; padding: 15px; border-radius: 4px;">${message}</p>
                             </div>
                             
-                            <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-top: 20px;">
-                                <p style="margin: 0;"><strong>📧 Reply to:</strong> ${email}</p>
-                                <p style="margin: 5px 0 0 0;"><strong>🕒 Received:</strong> ${new Date().toLocaleString()}</p>
-                                <p style="margin: 5px 0 0 0;"><strong>🔢 Reference:</strong> #${inquiryId}</p>
+                            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin-top: 20px;">
+                                <h4 style="margin: 0 0 10px 0; color: #27ae60; font-size: 14px;">📧 Quick Actions</h4>
+                                <p style="margin: 0; font-size: 14px; color: #2c3e50;"><strong>Reply to:</strong> <a href="mailto:${email}" style="color: #3498db; text-decoration: none;">${email}</a></p>
+                                <p style="margin: 5px 0 0 0; font-size: 14px; color: #2c3e50;"><strong>🕒 Received:</strong> ${new Date().toLocaleString()}</p>
+                                <p style="margin: 5px 0 0 0; font-size: 14px; color: #2c3e50;"><strong>🔢 Reference:</strong> #${inquiryId}</p>
+                                <p style="margin: 5px 0 0 0; font-size: 14px; color: #2c3e50;"><strong>📋 Team Request:</strong> ${selectedTeamMember}</p>
+                            </div>
+                            
+                            <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #ecf0f1;">
+                                <p style="margin: 0; font-size: 12px; color: #7f8c8d;">Menu Makers - Professional Web Development Services</p>
+                                <p style="margin: 5px 0 0 0; font-size: 12px;"><a href="mailto:menumakers17@gmail.com" style="color: #3498db; text-decoration: none;">menumakers17@gmail.com</a></p>
                             </div>
                         </div>
                     </div>
-                `
+                `,
+                messageId: `inquiry-${inquiryId}-${Date.now()}@menumakers.com`,
+                priority: 'normal'
             };
 
-            // Enhanced confirmation email to user with reference ID
+            // Enhanced confirmation email to user with anti-spam improvements
             const userMailOptions = {
-                from: getEnvVar('EMAIL_USER'),
-                to: email,
-                subject: `Thank you for contacting Menu Makers! [Reference: #${inquiryId}]`,
+                from: {
+                    name: 'Menu Makers Support Team',
+                    address: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com'
+                },
+                to: {
+                    name: name,
+                    address: email
+                },
+                replyTo: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com',
+                subject: `Thank you for contacting Menu Makers - Confirmation #${inquiryId}`,
+                text: `
+Hi ${name},
+
+Thank you for reaching out to Menu Makers! We have received your inquiry and assigned it reference number #${inquiryId}.
+
+Your inquiry details:
+Reference: #${inquiryId}
+Subject: ${subject || 'General Inquiry'}
+Assigned to: ${recipientName}
+
+Your message: "${message}"
+
+What happens next?
+- We will review your inquiry within 24-48 hours
+- Our team will prepare a detailed response
+- You will receive a follow-up email with next steps
+
+Please save your reference number #${inquiryId} for future correspondence.
+
+Best regards,
+The Menu Makers Team
+Email: menumakers17@gmail.com
+Website: https://menu-makers-portfolio.onrender.com
+
+--
+This is an automated confirmation email from Menu Makers Portfolio.
+                `,
                 html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                        <div style="background: linear-gradient(135deg, #00cec9 0%, #00d4aa 50%, #55efc4 100%); padding: 20px; text-align: center;">
-                            <h1 style="color: white; margin: 0;">Thank You for Contacting Us!</h1>
+                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+                        <div style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); padding: 25px; text-align: center; border-radius: 8px 8px 0 0;">
+                            <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 600;">Thank You for Contacting Us!</h1>
+                            <p style="color: #d5f4e6; margin: 5px 0 0 0; font-size: 14px;">Your inquiry has been received</p>
                         </div>
-                        <div style="padding: 20px; background: #f8f9fa;">
-                            <p>Hi ${name},</p>
-                            <p>Thank you for reaching out to Menu Makers! We've received your inquiry and it has been assigned reference number <strong>#${inquiryId}</strong>.</p>
+                        <div style="padding: 25px; background: #f8f9fa; border-radius: 0 0 8px 8px;">
+                            <p style="font-size: 16px; color: #2c3e50; margin-top: 0;">Hi <strong>${name}</strong>,</p>
+                            <p style="font-size: 14px; color: #2c3e50; line-height: 1.6;">Thank you for reaching out to Menu Makers! We have received your inquiry and assigned it reference number <strong style="color: #27ae60;">#${inquiryId}</strong>.</p>
                             
-                            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8; margin: 20px 0;">
-                                <p style="margin: 0 0 10px 0;"><strong>Your inquiry details:</strong></p>
-                                <p style="margin: 0;"><strong>Reference:</strong> #${inquiryId}</p>
-                                <p style="margin: 0;"><strong>Subject:</strong> ${subject || 'General Inquiry'}</p>
-                                <p style="margin: 0;"><strong>Assigned to:</strong> ${recipientName}</p>
-                                <p style="margin: 10px 0 0 0; font-style: italic; border-top: 1px solid #eee; padding-top: 10px;">"${message}"</p>
+                            <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #3498db; margin: 20px 0;">
+                                <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 16px;">📋 Your Inquiry Details</h3>
+                                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                                    <tr><td style="padding: 5px 0; font-weight: 600; color: #34495e;">Reference:</td><td style="padding: 5px 0; color: #27ae60; font-weight: 600;">#${inquiryId}</td></tr>
+                                    <tr><td style="padding: 5px 0; font-weight: 600; color: #34495e;">Subject:</td><td style="padding: 5px 0; color: #2c3e50;">${subject || 'General Inquiry'}</td></tr>
+                                    <tr><td style="padding: 5px 0; font-weight: 600; color: #34495e;">Requested Team:</td><td style="padding: 5px 0; color: #2c3e50;">${selectedTeamMember}</td></tr>
+                                    <tr><td style="padding: 5px 0; font-weight: 600; color: #34495e;">Handled by:</td><td style="padding: 5px 0; color: #2c3e50;">Menu Makers Team</td></tr>
+                                </table>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ecf0f1;">
+                                    <p style="margin: 0; font-style: italic; color: #34495e; background: #f8f9fa; padding: 12px; border-radius: 4px; font-size: 13px;">"${message}"</p>
+                                </div>
                             </div>
                             
-                            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
-                                <p style="margin: 0 0 10px 0;"><strong>⏰ What happens next?</strong></p>
-                                <ul style="margin: 0; padding-left: 20px;">
-                                    <li>We'll review your inquiry within 24-48 hours</li>
-                                    <li>Our team will prepare a detailed response</li>
-                                    <li>You'll receive a follow-up email with next steps</li>
+                            <div style="background: #fff3cd; padding: 20px; border-radius: 6px; border-left: 4px solid #f39c12; margin: 20px 0;">
+                                <h4 style="margin: 0 0 15px 0; color: #e67e22; font-size: 16px;">⏰ What Happens Next?</h4>
+                                <ul style="margin: 0; padding-left: 20px; color: #2c3e50; font-size: 14px; line-height: 1.6;">
+                                    <li style="margin-bottom: 8px;">We will review your inquiry within 24-48 hours</li>
+                                    <li style="margin-bottom: 8px;">Our team will prepare a detailed response</li>
+                                    <li style="margin-bottom: 0;">You will receive a follow-up email with next steps</li>
                                 </ul>
                             </div>
                             
-                            <p>Please save your reference number <strong>#${inquiryId}</strong> for future correspondence.</p>
-                            <p>Best regards,<br><strong>The Menu Makers Team</strong><br>
-                            <a href="mailto:menumakers17@gmail.com" style="color: #666; font-size: 14px;">menumakers17@gmail.com</a></p>
+                            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; text-align: center; margin: 20px 0;">
+                                <p style="margin: 0; font-size: 14px; color: #27ae60; font-weight: 600;">📝 Please save your reference number</p>
+                                <p style="margin: 5px 0 0 0; font-size: 18px; color: #2c3e50; font-weight: 700; letter-spacing: 1px;">#${inquiryId}</p>
+                                <p style="margin: 5px 0 0 0; font-size: 12px; color: #7f8c8d;">for future correspondence</p>
+                            </div>
+                            
+                            <div style="text-align: center; padding: 20px 0; border-top: 1px solid #ecf0f1;">
+                                <p style="margin: 0; font-size: 14px; color: #2c3e50;">Best regards,</p>
+                                <p style="margin: 5px 0; font-size: 16px; color: #2c3e50; font-weight: 600;">The Menu Makers Team</p>
+                                <p style="margin: 10px 0 0 0; font-size: 12px;">
+                                    <a href="mailto:menumakers17@gmail.com" style="color: #3498db; text-decoration: none; margin-right: 15px;">📧 menumakers17@gmail.com</a>
+                                    <a href="https://menu-makers-portfolio.onrender.com" style="color: #3498db; text-decoration: none;">🌐 Our Website</a>
+                                </p>
+                            </div>
+                            
+                            <div style="background: #ecf0f1; padding: 15px; border-radius: 6px; text-align: center; margin-top: 20px;">
+                                <p style="margin: 0; font-size: 11px; color: #7f8c8d;">This is an automated confirmation email from Menu Makers Portfolio.</p>
+                            </div>
                         </div>
                     </div>
-                `
+                `,
+                messageId: `confirmation-${inquiryId}-${Date.now()}@menumakers.com`,
+                priority: 'normal'
             };
 
             // Send emails using universal function
@@ -672,7 +819,7 @@ try {
             stmt.run([
                 inquiryId,
                 'email_sent',
-                `Initial contact email sent to ${recipientName}`,
+                `Initial contact email sent to Menu Makers Team (requested: ${selectedTeamMember})`,
                 1
             ], (err) => {
                 if (err) {
@@ -930,37 +1077,48 @@ try {
                 });
             }
 
-            // Prepare email options
+            // Prepare anti-spam email options
             const mailOptions = {
-                from: getEnvVar('EMAIL_USER'),
+                from: {
+                    name: 'Menu Makers Support',
+                    address: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com'
+                },
                 to: to,
-                subject: inquiryId ? `Re: [#${inquiryId}] ${subject}` : subject,
+                subject: inquiryId ? `Re: Business Inquiry #${inquiryId} - ${subject}` : `Menu Makers - ${subject}`,
                 replyTo: replyTo || getEnvVar('EMAIL_USER'),
+                text: message.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
                 html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                        <div style="background: linear-gradient(135deg, #00cec9 0%, #00d4aa 50%, #55efc4 100%); padding: 20px; text-align: center;">
-                            <h1 style="color: white; margin: 0;">Message from Menu Makers</h1>
+                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+                        <div style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); padding: 25px; text-align: center; border-radius: 8px 8px 0 0;">
+                            <h1 style="color: white; margin: 0; font-size: 22px; font-weight: 600;">Message from Menu Makers</h1>
+                            ${inquiryId ? `<p style="color: #ecf0f1; margin: 5px 0 0 0; font-size: 13px;">Re: Business Inquiry #${inquiryId}</p>` : ''}
                         </div>
-                        <div style="padding: 20px; background: #f8f9fa;">
-                            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #00d4aa;">
-                                ${message.replace(/\n/g, '<br>')}
+                        <div style="padding: 25px; background: #f8f9fa; border-radius: 0 0 8px 8px;">
+                            <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #3498db;">
+                                <div style="color: #2c3e50; line-height: 1.6; font-size: 14px;">
+                                    ${message.replace(/\n/g, '<br>')}
+                                </div>
                             </div>
                             
-                            <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-top: 20px;">
-                                <p style="margin: 0; color: #2d5a4d;">
-                                    <strong>📧 From:</strong> Menu Makers Team<br>
-                                    <strong>🕒 Sent:</strong> ${new Date().toLocaleString()}<br>
+                            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin-top: 20px;">
+                                <h4 style="margin: 0 0 10px 0; color: #27ae60; font-size: 14px;">📧 Contact Information</h4>
+                                <p style="margin: 0; color: #2c3e50; font-size: 13px;">
+                                    <strong>From:</strong> Menu Makers Support Team<br>
+                                    <strong>� Sent:</strong> ${new Date().toLocaleString()}<br>
                                     ${inquiryId ? `<strong>🔢 Reference:</strong> #${inquiryId}<br>` : ''}
-                                    <strong>📞 Contact:</strong> <a href="mailto:menumakers17@gmail.com">menumakers17@gmail.com</a>
+                                    <strong>📞 Contact:</strong> <a href="mailto:menumakers17@gmail.com" style="color: #3498db; text-decoration: none;">menumakers17@gmail.com</a>
                                 </p>
                             </div>
-                        </div>
-                        
-                        <div style="text-align: center; padding: 20px; background: #f0f0f0; color: #666; font-size: 12px;">
-                            <p style="margin: 0;">This email was sent from Menu Makers Portfolio Admin Panel</p>
+                            
+                            <div style="text-align: center; padding: 20px 0; border-top: 1px solid #ecf0f1; margin-top: 20px;">
+                                <p style="margin: 0; font-size: 12px; color: #7f8c8d;">Menu Makers - Professional Web Development Services</p>
+                                <p style="margin: 5px 0 0 0; font-size: 11px; color: #95a5a6;">This email was sent from Menu Makers Admin Panel</p>
+                            </div>
                         </div>
                     </div>
-                `
+                `,
+                messageId: inquiryId ? `admin-reply-${inquiryId}-${Date.now()}@menumakers.com` : `admin-${Date.now()}@menumakers.com`,
+                priority: 'normal'
             };
 
             // Send the email using universal function
