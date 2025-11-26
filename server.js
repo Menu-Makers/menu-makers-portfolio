@@ -147,14 +147,17 @@ try {
             if (emailService === 'sendgrid') {
                 // SendGrid format with anti-spam improvements
                 const sendGridMessage = {
-                    to: mailOptions.to,
+                    to: {
+                        email: typeof mailOptions.to === 'string' ? mailOptions.to : mailOptions.to.address || mailOptions.to.email,
+                        name: typeof mailOptions.to === 'object' ? mailOptions.to.name : undefined
+                    },
                     from: {
                         email: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com',
                         name: 'Menu Makers'
                     },
                     replyTo: {
-                        email: getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com',
-                        name: 'Menu Makers Support'
+                        email: mailOptions.replyTo ? (typeof mailOptions.replyTo === 'string' ? mailOptions.replyTo : mailOptions.replyTo.address || mailOptions.replyTo.email) : (getEnvVar('EMAIL_USER') || 'menumakers17@gmail.com'),
+                        name: mailOptions.replyTo && typeof mailOptions.replyTo === 'object' ? mailOptions.replyTo.name : 'Menu Makers Support'
                     },
                     subject: mailOptions.subject,
                     html: mailOptions.html,
@@ -196,7 +199,7 @@ try {
     async function sendViaGmail(mailOptions) {
         // Initialize Gmail transporter if not already done
         if (!transporter) {
-            transporter = nodemailer.createTransporter({
+            transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
                     user: getEnvVar('EMAIL_USER'),
