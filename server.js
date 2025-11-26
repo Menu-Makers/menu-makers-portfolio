@@ -141,7 +141,7 @@ try {
 
     console.log(`📧 Email service: ${emailService}`);
 
-    // Universal email sending function with anti-spam improvements
+    // Universal email sending function with improved error handling and Gmail fallback
     async function sendEmail(mailOptions) {
         try {
             if (emailService === 'sendgrid') {
@@ -158,67 +158,76 @@ try {
                     },
                     subject: mailOptions.subject,
                     html: mailOptions.html,
-                    // Anti-spam improvements
-                    categories: ['contact-form', 'business-inquiry'],
-                    customArgs: {
-                        source: 'contact-form',
-                        version: '1.0'
-                    },
                     // Text version for better deliverability
-                    text: mailOptions.text || mailOptions.html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
-                    // Tracking settings
-                    trackingSettings: {
-                        clickTracking: {
-                            enable: false
-                        },
-                        openTracking: {
-                            enable: false
-                        }
-                    },
-                    // Mail settings for better delivery
-                    mailSettings: {
-                        sandboxMode: {
-                            enable: false
-                        },
-                        spamCheck: {
-                            enable: true,
-                            threshold: 1
-                        }
-                    }
+                    text: mailOptions.text || mailOptions.html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
                 };
                 
-                console.log('📧 Sending email via SendGrid with anti-spam settings...');
-                await sgMail.send(sendGridMessage);
-                console.log('✅ Email sent successfully via SendGrid');
+                console.log('📧 Sending email via SendGrid...');
+                console.log('📧 SendGrid message:', JSON.stringify({
+                    to: sendGridMessage.to,
+                    from: sendGridMessage.from,
+                    subject: sendGridMessage.subject
+                }, null, 2));
+                
+                try {
+                    await sgMail.send(sendGridMessage);
+                    console.log('✅ Email sent successfully via SendGrid');
+                } catch (sendGridError) {
+                    console.error('❌ SendGrid error details:', {
+                        message: sendGridError.message,
+                        code: sendGridError.code,
+                        response: sendGridError.response?.body
+                    });
+                    
+                    // If SendGrid fails, fallback to Gmail
+                    console.log('🔄 Falling back to Gmail due to SendGrid error...');
+                    await sendViaGmail(mailOptions);
+                }
             } else {
-                // Nodemailer format with anti-spam improvements
-                const enhancedMailOptions = {
-                    ...mailOptions,
-                    // Add text version for better deliverability
-                    text: mailOptions.text || mailOptions.html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
-                    // Add proper headers
-                    headers: {
-                        'X-Priority': '3',
-                        'X-MSMail-Priority': 'Normal',
-                        'Importance': 'Normal',
-                        'List-Unsubscribe': '<mailto:unsubscribe@menumakers17.gmail.com>',
-                        'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN',
-                        'X-Mailer': 'Menu Makers Contact System'
-                    },
-                    // Proper reply-to
-                    replyTo: mailOptions.replyTo || getEnvVar('EMAIL_USER'),
-                    // Message ID for tracking
-                    messageId: mailOptions.messageId
-                };
-                
-                console.log('📧 Sending email via Gmail with anti-spam settings...');
-                await transporter.sendMail(enhancedMailOptions);
-                console.log('✅ Email sent successfully via Gmail');
+                await sendViaGmail(mailOptions);
             }
         } catch (error) {
-            console.error('❌ Email sending failed:', error);
+            console.error('❌ Email sending failed completely:', error);
             throw error;
         }
+    }
+
+    // Gmail fallback function
+    async function sendViaGmail(mailOptions) {
+        // Initialize Gmail transporter if not already done
+        if (!transporter) {
+            transporter = nodemailer.createTransporter({
+                service: 'gmail',
+                auth: {
+                    user: getEnvVar('EMAIL_USER'),
+                    pass: getEnvVar('EMAIL_PASS')
+                }
+            });
+        }
+
+        // Nodemailer format with anti-spam improvements
+        const enhancedMailOptions = {
+            ...mailOptions,
+            // Add text version for better deliverability
+            text: mailOptions.text || mailOptions.html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
+            // Add proper headers
+            headers: {
+                'X-Priority': '3',
+                'X-MSMail-Priority': 'Normal',
+                'Importance': 'Normal',
+                'List-Unsubscribe': '<mailto:unsubscribe@menumakers17.gmail.com>',
+                'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN',
+                'X-Mailer': 'Menu Makers Contact System'
+            },
+            // Proper reply-to
+            replyTo: mailOptions.replyTo || getEnvVar('EMAIL_USER'),
+            // Message ID for tracking
+            messageId: mailOptions.messageId
+        };
+        
+        console.log('📧 Sending email via Gmail...');
+        await transporter.sendMail(enhancedMailOptions);
+        console.log('✅ Email sent successfully via Gmail');
     }
 
     // Setup Express with static files
